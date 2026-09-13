@@ -1,0 +1,50 @@
+@startuml
+
+interface PizzaBuilder {
+    + setCrust(crust: CrustType): PizzaBuilder
+    + setSauce(sauce: SauceType): PizzaBuilder
+    + addTopping(topping: Topping): PizzaBuilder
+    + build(): Pizza
+}
+
+abstract class AbstractPizzaBuilder {
+    # crust: CrustType
+    # sauce: SauceType
+    # toppings: EnumSet<Topping>
+
+    # assertRequiredFieldsPresent(): void
+}
+
+class NeapolitanPizzaBuilder {
+    + setCrust(crust: CrustType): PizzaBuilder
+}
+
+class GlutenFreePizzaBuilder {
+    + setCrust(crust: CrustType): PizzaBuilder
+    + addTopping(topping: Topping): PizzaBuilder
+}
+
+class Pizza <<immutable>> {
+    - crust: CrustType
+    - sauce: SauceType
+    - toppings: Set<Topping>
+    + priceCents(): int
+}
+
+class IncompletePizzaException {
+}
+
+class PizzaMenuDirector {
+    + margherita(builder: PizzaBuilder): Pizza
+    + glutenFreeVeggieSupreme(builder: PizzaBuilder): Pizza
+}
+
+PizzaBuilder <|.. AbstractPizzaBuilder
+AbstractPizzaBuilder <|-- NeapolitanPizzaBuilder
+AbstractPizzaBuilder <|-- GlutenFreePizzaBuilder
+
+AbstractPizzaBuilder ..> Pizza : creates
+AbstractPizzaBuilder ..> IncompletePizzaException : throws
+PizzaMenuDirector ..> PizzaBuilder : uses
+
+@enduml
